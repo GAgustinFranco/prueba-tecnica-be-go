@@ -1,8 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller, Get, Post, Body, Patch,
+  Param, Delete, UseGuards,
+} from '@nestjs/common';
 import { TrucksService } from './trucks.service';
 import { CreateTruckDto } from './dto/create-truck.dto';
 import { UpdateTruckDto } from './dto/update-truck.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('trucks')
 export class TrucksController {
   constructor(private readonly trucksService: TrucksService) {}
@@ -19,16 +24,16 @@ export class TrucksController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.trucksService.findOne(+id);
+    return this.trucksService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTruckDto: UpdateTruckDto) {
-    return this.trucksService.update(+id, updateTruckDto);
+    return this.trucksService.update(id, updateTruckDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.trucksService.remove(+id);
+    return this.trucksService.remove(id);
   }
 }
