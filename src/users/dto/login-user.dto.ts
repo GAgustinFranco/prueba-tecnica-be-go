@@ -1,10 +1,10 @@
 import { IsEmail, IsString, MinLength } from 'class-validator';
 
-export class CreateUserDto {
+export class LoginUserDto {
   @IsEmail({}, { message: 'Email inválido' })
   email: string;
 
   @IsString()
-  @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
+  @MinLength(6)
   password: string;
 }
