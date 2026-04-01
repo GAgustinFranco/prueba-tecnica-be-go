@@ -7,6 +7,7 @@ import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { UpdateOrderDto } from './dto/update-order.dto';
 
 @ApiTags('Orders')
 @ApiBearerAuth('JWT-auth')
@@ -55,8 +56,8 @@ export class OrdersController {
   @ApiOperation({ summary: 'Actualizar orden' })
   @ApiResponse({ status: 200, description: 'Orden actualizada' })
   @ApiResponse({ status: 404, description: 'Orden no encontrada' })
-  update(@Param('id') id: string, @Body() body: Partial<CreateOrderDto>) {
-    return this.ordersService.update(id, body);
+  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
+    return this.ordersService.update(id, updateOrderDto);
   }
 
   @Delete(':id')

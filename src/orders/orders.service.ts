@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Order, OrderDocument } from './schemas/order.schema';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -15,24 +16,95 @@ export class OrdersService {
     return this.orderModel.create(createOrderDto);
   }
 
-  async findAll(): Promise<OrderDocument[]> {
-    return this.orderModel
-      .find()
-      .populate('user', '-password')
-      .populate('truck')
-      .populate('pickup')
-      .populate('dropoff');
+  async findAll(): Promise<any[]> {
+    return this.orderModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user',
+          pipeline: [{ $project: { password: 0 } }],
+        },
+      },
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'trucks',
+          localField: 'truck',
+          foreignField: '_id',
+          as: 'truck',
+        },
+      },
+      { $unwind: { path: '$truck', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'locations',
+          localField: 'pickup',
+          foreignField: '_id',
+          as: 'pickup',
+        },
+      },
+      { $unwind: { path: '$pickup', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'locations',
+          localField: 'dropoff',
+          foreignField: '_id',
+          as: 'dropoff',
+        },
+      },
+      { $unwind: { path: '$dropoff', preserveNullAndEmptyArrays: true } },
+      { $sort: { createdAt: -1 } },
+    ]);
   }
 
-  async findOne(id: string): Promise<OrderDocument> {
-    const order = await this.orderModel
-      .findById(id)
-      .populate('user', '-password')
-      .populate('truck')
-      .populate('pickup')
-      .populate('dropoff');
-    if (!order) throw new NotFoundException('Orden no encontrada');
-    return order;
+  async findOne(id: string): Promise<any> {
+    const result = await this.orderModel.aggregate([
+      {
+        $match: { _id: new Types.ObjectId(id) },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user',
+          pipeline: [{ $project: { password: 0 } }],
+        },
+      },
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'trucks',
+          localField: 'truck',
+          foreignField: '_id',
+          as: 'truck',
+        },
+      },
+      { $unwind: { path: '$truck', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'locations',
+          localField: 'pickup',
+          foreignField: '_id',
+          as: 'pickup',
+        },
+      },
+      { $unwind: { path: '$pickup', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'locations',
+          localField: 'dropoff',
+          foreignField: '_id',
+          as: 'dropoff',
+        },
+      },
+      { $unwind: { path: '$dropoff', preserveNullAndEmptyArrays: true } },
+    ]);
+
+    if (!result.length) throw new NotFoundException('Orden no encontrada');
+    return result[0];
   }
 
   async updateStatus(
@@ -49,7 +121,7 @@ export class OrdersService {
     return order;
   }
 
-  async update(id: string, attrs: Partial<CreateOrderDto>): Promise<OrderDocument> {
+  async update(id: string, attrs: UpdateOrderDto): Promise<OrderDocument> {
     const order = await this.orderModel
       .findByIdAndUpdate(id, attrs, { new: true })
       .populate('user', '-password')

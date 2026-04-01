@@ -94,7 +94,6 @@ Authorization: Bearer <token>
 ### Users
 | Método | Endpoint | Descripción | Auth |
 |--------|----------|-------------|------|
-| POST | `/api/users` | Crear usuario | ❌ |
 | GET | `/api/users` | Listar usuarios | ✅ |
 | GET | `/api/users/:id` | Obtener usuario por ID | ✅ |
 | PATCH | `/api/users/:id` | Actualizar usuario | ✅ |
