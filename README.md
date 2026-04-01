@@ -2,6 +2,8 @@
 
 API REST desarrollada con **NestJS**, **TypeScript** y **MongoDB** para gestionar órdenes de transporte vinculadas a camiones, usuarios y ubicaciones.
 
+🔗 **Repositorio:** https://github.com/GAgustinFranco/prueba-tecnica-be-go
+
 ---
 
 ## 🛠️ Tecnologías utilizadas
@@ -13,6 +15,7 @@ API REST desarrollada con **NestJS**, **TypeScript** y **MongoDB** para gestiona
 - **Google Places API** — Obtención de coordenadas y direcciones
 - **bcryptjs** — Encriptación de contraseñas
 - **class-validator** — Validación de DTOs
+- **Swagger** — Documentación interactiva de la API
 
 ---
 
@@ -33,11 +36,18 @@ npm install
 
 Configurá las variables de entorno en el archivo `.env`:
 ```env
+# App
 PORT=3000
-MONGODB_URI=mongodb+srv://usuario:password@cluster.mongodb.net/bego
-JWT_SECRET=tu_jwt_secret
+
+# MongoDB
+MONGODB_URI=mongodb+srv://agustingalvez0901:admin123@movies.umq9tl9.mongodb.net/bego?retryWrites=true&w=majority&appName=Movies
+
+# JWT
+JWT_SECRET=tL9#mK2$vX7@nQ4&wR8!pJ3^yH6*cF1%bN5+dS0
 JWT_EXPIRES_IN=24h
-GOOGLE_MAPS_API_KEY=tu_google_maps_api_key
+
+# Google Maps
+GOOGLE_MAPS_API_KEY=AIzaSyATOxzRCxpe6h0J3rjjjDoZeqhWPWOK0A4
 ```
 
 Iniciá el servidor:
@@ -47,58 +57,76 @@ npm run start:dev
 
 ---
 
+## 📚 Documentación Swagger
+
+Una vez iniciado el servidor, la documentación interactiva de la API está disponible en:
+```
+http://localhost:3000/docs
+```
+
+Desde ahí podés probar todos los endpoints directamente en el navegador, incluyendo autenticación con JWT.
+
+---
+
 ## 🔐 Autenticación
 
-Todos los endpoints excepto `register` y `login` requieren un token JWT en el header:
+Los endpoints de registro y login son públicos. Todos los demás requieren un token JWT en el header:
 ```
 Authorization: Bearer <token>
 ```
+
+**Flujo:**
+1. Registrarse en `POST /api/auth/register`
+2. Hacer login en `POST /api/auth/login`
+3. Copiar el `access_token` de la respuesta
+4. Usarlo en el botón **Authorize** de Swagger o en el header de Postman
 
 ---
 
 ## 📡 Endpoints
 
 ### Auth
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Registro de usuario |
-| POST | `/api/auth/login` | Login, devuelve JWT |
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/auth/register` | Registro de usuario | ❌ |
+| POST | `/api/auth/login` | Login, devuelve JWT | ❌ |
 
 ### Users
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `/api/users` | Listar usuarios |
-| GET | `/api/users/:id` | Obtener usuario |
-| PATCH | `/api/users/:id` | Actualizar usuario |
-| DELETE | `/api/users/:id` | Eliminar usuario |
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/users` | Crear usuario | ❌ |
+| GET | `/api/users` | Listar usuarios | ✅ |
+| GET | `/api/users/:id` | Obtener usuario por ID | ✅ |
+| PATCH | `/api/users/:id` | Actualizar usuario | ✅ |
+| DELETE | `/api/users/:id` | Eliminar usuario | ✅ |
 
 ### Trucks
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/api/trucks` | Crear truck |
-| GET | `/api/trucks` | Listar trucks |
-| GET | `/api/trucks/:id` | Obtener truck |
-| PATCH | `/api/trucks/:id` | Actualizar truck |
-| DELETE | `/api/trucks/:id` | Eliminar truck |
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/trucks` | Crear truck | ✅ |
+| GET | `/api/trucks` | Listar trucks | ✅ |
+| GET | `/api/trucks/:id` | Obtener truck por ID | ✅ |
+| PATCH | `/api/trucks/:id` | Actualizar truck | ✅ |
+| DELETE | `/api/trucks/:id` | Eliminar truck | ✅ |
 
 ### Orders
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/api/orders` | Crear orden |
-| GET | `/api/orders` | Listar órdenes |
-| GET | `/api/orders/:id` | Obtener orden |
-| PATCH | `/api/orders/:id/status` | Cambiar status de orden |
-| PATCH | `/api/orders/:id` | Actualizar orden |
-| DELETE | `/api/orders/:id` | Eliminar orden |
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/orders` | Crear orden | ✅ |
+| GET | `/api/orders` | Listar órdenes | ✅ |
+| GET | `/api/orders/:id` | Obtener orden por ID | ✅ |
+| PATCH | `/api/orders/:id/status` | Cambiar status de orden | ✅ |
+| PATCH | `/api/orders/:id` | Actualizar orden | ✅ |
+| DELETE | `/api/orders/:id` | Eliminar orden | ✅ |
 
 ### Locations
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/api/locations` | Crear location desde place_id |
-| GET | `/api/locations` | Listar locations |
-| GET | `/api/locations/:id` | Obtener location |
-| PATCH | `/api/locations/:id` | Actualizar location |
-| DELETE | `/api/locations/:id` | Eliminar location |
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/locations` | Crear location desde place_id | ✅ |
+| GET | `/api/locations` | Listar locations | ✅ |
+| GET | `/api/locations/:id` | Obtener location por ID | ✅ |
+| PATCH | `/api/locations/:id` | Actualizar location | ✅ |
+| DELETE | `/api/locations/:id` | Eliminar location | ✅ |
 
 ---
 
@@ -108,7 +136,7 @@ Authorization: Bearer <token>
 ```json
 {
   "email": "string (único)",
-  "password": "string (encriptado)"
+  "password": "string (encriptado con bcrypt)"
 }
 ```
 
@@ -146,6 +174,15 @@ Authorization: Bearer <token>
 
 ---
 
+## 🗺️ Ejemplos de place_id para probar Locations
+```
+ChIJiRp93iEC0oURvJVqErpVVHw
+ChIJsUDXn2od0oURpAnsjV2k44A
+ChIJGQkBCFIAzoURlLaQUWnuYZc
+```
+
+---
+
 ## 🌿 Flujo Git
 
 Se utilizó una rama por cada dominio y se mergeó a `main` al completar cada uno:
@@ -169,9 +206,10 @@ El proyecto fue desarrollado de forma modular siguiendo la arquitectura de NestJ
 - **Google Places API** integrada en el servicio de Locations para obtener automáticamente la dirección y coordenadas a partir de un `place_id`
 - **Populate de Mongoose** para devolver los datos relacionados completos en Orders
 - **Variables de entorno** para toda la configuración sensible
+- **Swagger** para la documentación interactiva de todos los endpoints
 
 ---
 
 ## 👤 Autor
 
-Agustín Franco Galvez
+**Agustín Franco Galvez**
