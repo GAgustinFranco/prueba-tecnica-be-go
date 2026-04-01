@@ -1,98 +1,177 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🚚 Truck Logistics API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST desarrollada con **NestJS**, **TypeScript** y **MongoDB** para gestionar órdenes de transporte vinculadas a camiones, usuarios y ubicaciones.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 🛠️ Tecnologías utilizadas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **NestJS** — Framework de Node.js
+- **TypeScript** — Tipado estático
+- **MongoDB + Mongoose** — Base de datos
+- **JWT + Passport** — Autenticación
+- **Google Places API** — Obtención de coordenadas y direcciones
+- **bcryptjs** — Encriptación de contraseñas
+- **class-validator** — Validación de DTOs
 
-## Project setup
+---
 
+## 📋 Requisitos previos
+
+- Node.js v18+
+- MongoDB Atlas o local
+- API Key de Google Places API
+
+---
+
+## ⚙️ Instalación
 ```bash
-$ npm install
+git clone https://github.com/GAgustinFranco/prueba-tecnica-be-go.git
+cd prueba-tecnica-be-go
+npm install
 ```
 
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+Configurá las variables de entorno en el archivo `.env`:
+```env
+PORT=3000
+MONGODB_URI=mongodb+srv://usuario:password@cluster.mongodb.net/bego
+JWT_SECRET=tu_jwt_secret
+JWT_EXPIRES_IN=24h
+GOOGLE_MAPS_API_KEY=tu_google_maps_api_key
 ```
 
-## Run tests
-
+Iniciá el servidor:
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 🔐 Autenticación
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+Todos los endpoints excepto `register` y `login` requieren un token JWT en el header:
+```
+Authorization: Bearer <token>
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 📡 Endpoints
 
-Check out a few resources that may come in handy when working with NestJS:
+### Auth
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Registro de usuario |
+| POST | `/api/auth/login` | Login, devuelve JWT |
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Users
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/api/users` | Listar usuarios |
+| GET | `/api/users/:id` | Obtener usuario |
+| PATCH | `/api/users/:id` | Actualizar usuario |
+| DELETE | `/api/users/:id` | Eliminar usuario |
 
-## Support
+### Trucks
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/api/trucks` | Crear truck |
+| GET | `/api/trucks` | Listar trucks |
+| GET | `/api/trucks/:id` | Obtener truck |
+| PATCH | `/api/trucks/:id` | Actualizar truck |
+| DELETE | `/api/trucks/:id` | Eliminar truck |
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Orders
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/api/orders` | Crear orden |
+| GET | `/api/orders` | Listar órdenes |
+| GET | `/api/orders/:id` | Obtener orden |
+| PATCH | `/api/orders/:id/status` | Cambiar status de orden |
+| PATCH | `/api/orders/:id` | Actualizar orden |
+| DELETE | `/api/orders/:id` | Eliminar orden |
 
-## Stay in touch
+### Locations
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/api/locations` | Crear location desde place_id |
+| GET | `/api/locations` | Listar locations |
+| GET | `/api/locations/:id` | Obtener location |
+| PATCH | `/api/locations/:id` | Actualizar location |
+| DELETE | `/api/locations/:id` | Eliminar location |
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## 📦 Modelos
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### User
+```json
+{
+  "email": "string (único)",
+  "password": "string (encriptado)"
+}
+```
+
+### Truck
+```json
+{
+  "user": "ObjectId",
+  "year": "string",
+  "color": "string",
+  "plates": "string (único)"
+}
+```
+
+### Order
+```json
+{
+  "user": "ObjectId",
+  "truck": "ObjectId",
+  "status": "created | in transit | completed",
+  "pickup": "ObjectId (Location)",
+  "dropoff": "ObjectId (Location)"
+}
+```
+
+### Location
+```json
+{
+  "user": "ObjectId",
+  "place_id": "string (único)",
+  "address": "string",
+  "latitude": "number",
+  "longitude": "number"
+}
+```
+
+---
+
+## 🌿 Flujo Git
+
+Se utilizó una rama por cada dominio y se mergeó a `main` al completar cada uno:
+```
+main
+├── feature/users
+├── feature/trucks
+├── feature/orders
+└── feature/locations
+```
+
+---
+
+## 🏗️ Enfoque de desarrollo
+
+El proyecto fue desarrollado de forma modular siguiendo la arquitectura de NestJS:
+
+- **Módulos independientes** por cada dominio (Users, Trucks, Orders, Locations)
+- **DTOs con validaciones** usando `class-validator` para validar los datos antes de insertar en la base de datos
+- **JWT Guard** reutilizable aplicado a todos los endpoints protegidos
+- **Google Places API** integrada en el servicio de Locations para obtener automáticamente la dirección y coordenadas a partir de un `place_id`
+- **Populate de Mongoose** para devolver los datos relacionados completos en Orders
+- **Variables de entorno** para toda la configuración sensible
+
+---
+
+## 👤 Autor
+
+Agustín Franco
