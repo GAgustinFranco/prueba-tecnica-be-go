@@ -174,4 +174,4 @@ El proyecto fue desarrollado de forma modular siguiendo la arquitectura de NestJ
 
 ## 👤 Autor
 
-Agustín Franco
+Agustín Franco Galvez
